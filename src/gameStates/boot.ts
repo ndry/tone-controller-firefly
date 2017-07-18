@@ -1,16 +1,10 @@
 ﻿module $safeprojectname$.Client {
 
     export class Boot extends Phaser.State {
+        logo: Phaser.Sprite;
+        loaderText: Phaser.Text;
+
         preload() {
-            //You can preload an image here if you dont want to use text for the loading screen
-        }
-
-        create() {
-            this.stage.setBackgroundColor(0xFFFFFF);
-
-            this.input.maxPointers = 1;
-            this.stage.disableVisibilityChange = true;
-
             if (this.game.device.desktop) {
                 this.scale.pageAlignHorizontally = true;
                 this.scale.scaleMode = Phaser.ScaleManager.RESIZE;
@@ -26,8 +20,39 @@
                 this.scale.refresh();
             }
 
-            this.game.state.start('Preloader', true, false);
+
+            this.load.image('logo', './assets/ui/gameLogo.png');
+
+
+
+
+
+            this.load.image('near-background-no-halo', './assets/sprites/near-background-no-halo.png');
+            this.load.image('near-background-just-halo', './assets/sprites/near-background-just-halo.png');
+            this.load.image('far-background-transparent', './assets/sprites/far-background-transparent.png');
+            this.load.image('moon', './assets/sprites/moon.png');
         }
+
+        create() {
+            this.input.maxPointers = 1;
+            this.stage.disableVisibilityChange = true;
+
+            this.stage.setBackgroundColor(0x020408);
+
+            this.loaderText = this.game.add.text(this.world.centerX,
+                200,
+                "Loading...",
+                { font: "18px Arial", fill: "#FFFFFF", align: "center" });
+            this.loaderText.anchor.setTo(0.5);
+
+            this.logo = this.add.sprite(this.world.centerX, this.world.centerY, 'logo');
+            this.logo.anchor.setTo(0.5);
+            
+            var tween = this.add.tween(this.loaderText).to({ alpha: 0.3 }, 2000,
+                Phaser.Easing.Linear.None, true);
+            tween.onComplete.add(() => this.game.state.start('Level01', true, false), this);
+        }
+
     }
 
 }
